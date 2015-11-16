@@ -16,6 +16,35 @@ let number = ['0'-'9']+
 rule start = parse 
      | blank { start lexbuf }
      | "/*" { comment_depth :=1; comment lexbuf; start lexbuf }
+     | "int" { INT }
+     | '+'   { PLUS }
+     | '-'   { MINUS }
+     | '*'   { STAR }
+     | '/'   { SLASH }
+     | '='   { EQUAL }
+     | "=="  { EQUALEQUAL }
+     | "<="  { LE }
+     | '<'   { LT }
+     | ">="  { GE }
+     | '>'   { GT }
+     | '!'   { NOT }
+     | "&&"  { AND }
+     | "||"  { OR }
+     | "if"  { IF }
+     | "else"  { ELSE }
+     | "while" { WHILE }
+     | "do"  { DO }
+     | "read"  { READ }
+     | "print" { PRINT }
+     | ';'   { SEMICOLON }
+     | '{'   { LBRACE }
+     | '}'   { RBRACE }
+     | '['   { LBLOCK }
+     | ']'   { RBLOCK }
+     | '('   { LPAREN }
+     | ')'   { RPAREN }
+     | id { ID (Lexing.lexme lexbuf) }
+     | number { NUM (int_of_string (Lexing.lexeme lexbuf)) }
      | eof   { EOF}
      | _ { raise LexicalError }
 

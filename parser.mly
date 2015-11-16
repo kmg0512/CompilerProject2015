@@ -25,10 +25,14 @@ block:
     ;
 
 decls:
-   |  { [] }
+    | decls decl  { [] }
+    | 
     ;
 
+decl:
+	type_ x;
+
 stmts:
-   |  { [] }
+   | stmts stmt  { [] }
     ;
 

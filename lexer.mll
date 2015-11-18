@@ -43,7 +43,7 @@ rule start = parse
      | ']'   { RBLOCK }
      | '('   { LPAREN }
      | ')'   { RPAREN }
-     | id { ID (Lexing.lexme lexbuf) }
+     | id { ID (Lexing.lexeme lexbuf) }
      | number { NUM (int_of_string (Lexing.lexeme lexbuf)) }
      | eof   { EOF}
      | _ { raise LexicalError }

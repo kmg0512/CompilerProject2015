@@ -1,0 +1,21 @@
+#!/bin/bash
+
+./run test/array.s
+read tmp
+./run test/fact.s
+read tmp
+./run test/fib.s
+read tmp
+./run test/loop1.s
+read tmp
+./run test/loop2.s
+read tmp
+./run test/t0.s
+read tmp
+./run test/t1.s
+read tmp
+./run test/t2.s
+read tmp
+./run test/t3.s
+read tmp
+./run test/t4.s

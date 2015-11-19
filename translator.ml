@@ -145,7 +145,7 @@ let rec trans_s : S.stmt -> T.linstr list
 			code1 @
 			[(T.dummy_label,T.CJUMP (t1,le))]
 	| S.BLOCK block ->
-		[] (* trans_b block *)
+		trans_b block
 
 let rec trans_ss : S.stmts -> T.linstr list
 =fun ss ->

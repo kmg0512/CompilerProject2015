@@ -1,0 +1,1 @@
+del *.cmx *.cmi parser.mli parser.ml lexer.ml run.exe *.o *.cmo

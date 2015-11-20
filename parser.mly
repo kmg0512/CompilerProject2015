@@ -61,7 +61,7 @@ stmt:
     lv EQUAL exp SEMICOLON { S.ASSIGN ($1,$3) }
     | lv PLUS PLUS SEMICOLON { S.ASSIGN($1,S.ADD(S.LV $1,S.NUM 1)) }
     | IF LPAREN exp RPAREN stmt ELSE stmt { S.IF ($3,$5,$7) }
-    | IF LPAREN exp RPAREN stmt { S.IF ($3,$5, S.BLOCK ([],[])) }
+/*  | IF LPAREN exp RPAREN stmt { S.IF ($3,$5, S.BLOCK ([],[])) }*/
     | WHILE LPAREN exp RPAREN stmt { S.WHILE ($3,$5) }
     | DO stmt WHILE LPAREN exp RPAREN SEMICOLON { S.DOWHILE ($2,$5) }
     | READ LPAREN ID RPAREN SEMICOLON { S.READ ($3) }

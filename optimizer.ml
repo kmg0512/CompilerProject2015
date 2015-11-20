@@ -1,7 +1,7 @@
 (* TODO: Implement an optimizer *)
 
 let rec optimize : T.program -> T.program
-=fun t -> optimize2 optimize1 t t
+=fun t -> optimize3 (optimize2 (optimize1 t t))
 
 and optimize1 : T.program -> T.linstr list -> T.program
 =fun t t' ->
@@ -15,10 +15,29 @@ and optimize2 : T.program -> T.program
 	| [] -> []
 	| t1 :: t2 ->
 		match t1 with
-		| (_,UJUMP _) -> gotoskip t1 t2 @ optimize2 t2
-		| (_,CJUMP (_,_)) -> gotoskip t1 t2 @ optimize2 t2
-		| (_,CJUMPF (_,_)) -> gotoskip t1 t2 @ optimize2 t2
-		| _ -> optimize2 t2
+		| (_,T.UJUMP _) -> gotoskip t1 t2 @ optimize2 t2
+		| (_,T.CJUMP (_,_)) -> gotoskip t1 t2 @ optimize2 t2
+		| (_,T.CJUMPF (_,_)) -> gotoskip t1 t2 @ optimize2 t2
+		| (_,T.SKIP) -> optimize2 t2
+		| _ -> [t1] @ optimize2 t2
+
+(* SKIP LABEL SHIFT *)
+and optimize3 : T.program -> T.program
+=fun t ->
+	match t with
+	| [] -> []
+	| t1 :: t2 ->
+	begin
+		match t1 with
+		| (l,T.SKIP) ->
+		begin
+			match t2 with
+			| [] -> []
+			| (l',T.SKIP) :: t3 -> (l,T.SKIP) :: optimize3 t2
+			| (_,instr) :: t3 -> (l,instr) :: optimize3 t3
+		end
+		| _ -> t1 :: optimize3 t2
+	end
 
 and nonuse : T.linstr -> T.linstr list -> T.linstr list
 =fun t1 t2 ->
@@ -59,8 +78,10 @@ and nonuse : T.linstr -> T.linstr list -> T.linstr list
 			if x = x' then [t1] else nonuse t1 t3
 		| (_,T.CJUMPF (x',_)) :: t3 ->
 			if x = x' then [t1] else nonuse t1 t3
-		| (_,T.STORE (_,x')) :: t3 ->
-			if x = x' then [t1] else nonuse t1 t3
+		| (_,T.LOAD (_,(_,i'))) :: t3 ->
+			if x = i' then [t1] else nonuse t1 t3
+		| (_,T.STORE ((_,i'),x')) :: t3 ->
+			if x = i' || x = x' then [t1] else nonuse t1 t3
 		| (_,T.READ x') :: t3 ->
 			if x = x' then [t1] else nonuse t1 t3
 		| (_,T.WRITE x') :: t3 ->
@@ -83,8 +104,10 @@ and nonuse : T.linstr -> T.linstr list -> T.linstr list
 			if x = x' then [t1] else nonuse t1 t3
 		| (_,T.CJUMPF (x',_)) :: t3 ->
 			if x = x' then [t1] else nonuse t1 t3
-		| (_,T.STORE (_,x')) :: t3 ->
-			if x = x' then [t1] else nonuse t1 t3
+		| (_,T.LOAD (_,(_,i'))) :: t3 ->
+			if x = i' then [t1] else nonuse t1 t3
+		| (_,T.STORE ((_,i'),x')) :: t3 ->
+			if x = i' || x = x' then [t1] else nonuse t1 t3
 		| (_,T.READ x') :: t3 ->
 			if x = x' then [t1] else nonuse t1 t3
 		| (_,T.WRITE x') :: t3 ->
@@ -107,8 +130,10 @@ and nonuse : T.linstr -> T.linstr list -> T.linstr list
 			if x = x' then [t1] else nonuse t1 t3
 		| (_,T.CJUMPF (x',_)) :: t3 ->
 			if x = x' then [t1] else nonuse t1 t3
-		| (_,T.STORE (_,x')) :: t3 ->
-			if x = x' then [t1] else nonuse t1 t3
+		| (_,T.LOAD (_,(_,i'))) :: t3 ->
+			if x = i' then [t1] else nonuse t1 t3
+		| (_,T.STORE ((_,i'),x')) :: t3 ->
+			if x = i' || x = x' then [t1] else nonuse t1 t3
 		| (_,T.READ x') :: t3 ->
 			if x = x' then [t1] else nonuse t1 t3
 		| (_,T.WRITE x') :: t3 ->
@@ -131,8 +156,10 @@ and nonuse : T.linstr -> T.linstr list -> T.linstr list
 			if x = x' then [t1] else nonuse t1 t3
 		| (_,T.CJUMPF (x',_)) :: t3 ->
 			if x = x' then [t1] else nonuse t1 t3
-		| (_,T.STORE (_,x')) :: t3 ->
-			if x = x' then [t1] else nonuse t1 t3
+		| (_,T.LOAD (_,(_,i'))) :: t3 ->
+			if x = i' then [t1] else nonuse t1 t3
+		| (_,T.STORE ((_,i'),x')) :: t3 ->
+			if x = i' || x = x' then [t1] else nonuse t1 t3
 		| (_,T.READ x') :: t3 ->
 			if x = x' then [t1] else nonuse t1 t3
 		| (_,T.WRITE x') :: t3 ->
@@ -155,8 +182,10 @@ and nonuse : T.linstr -> T.linstr list -> T.linstr list
 			if x = x' then [t1] else nonuse t1 t3
 		| (_,T.CJUMPF (x',_)) :: t3 ->
 			if x = x' then [t1] else nonuse t1 t3
-		| (_,T.STORE (_,x')) :: t3 ->
-			if x = x' then [t1] else nonuse t1 t3
+		| (_,T.LOAD (_,(_,i'))) :: t3 ->
+			if x = i' then [t1] else nonuse t1 t3
+		| (_,T.STORE ((_,i'),x')) :: t3 ->
+			if x = i' || x = x' then [t1] else nonuse t1 t3
 		| (_,T.READ x') :: t3 ->
 			if x = x' then [t1] else nonuse t1 t3
 		| (_,T.WRITE x') :: t3 ->
@@ -179,8 +208,10 @@ and nonuse : T.linstr -> T.linstr list -> T.linstr list
 			if x = x' then [t1] else nonuse t1 t3
 		| (_,T.CJUMPF (x',_)) :: t3 ->
 			if x = x' then [t1] else nonuse t1 t3
-		| (_,T.STORE (_,x')) :: t3 ->
-			if x = x' then [t1] else nonuse t1 t3
+		| (_,T.LOAD (_,(_,i'))) :: t3 ->
+			if x = i' then [t1] else nonuse t1 t3
+		| (_,T.STORE ((_,i'),x')) :: t3 ->
+			if x = i' || x = x' then [t1] else nonuse t1 t3
 		| (_,T.READ x') :: t3 ->
 			if x = x' then [t1] else nonuse t1 t3
 		| (_,T.WRITE x') :: t3 ->
@@ -192,10 +223,15 @@ and nonuse : T.linstr -> T.linstr list -> T.linstr list
 and gotoskip : T.linstr -> T.linstr list -> T.linstr list
 =fun t1 t2 ->
 	match t2 with
-	| [] -> [t1]
-	| (l,T.SKIP) ->
+	| (l,T.SKIP) :: t3 ->
 	begin
 		match t1 with
-		| (_,UJUMP l') ->
-			if l = l' then
+		| (_,T.UJUMP l') ->
+			if l = l' then [(l,T.SKIP)] else gotoskip t1 t3 @ [(l,T.SKIP)]
+		| (_,T.CJUMP (_,l')) ->
+			if l = l' then [(l,T.SKIP)] else gotoskip t1 t3 @ [(l,T.SKIP)]
+		| (_,T.CJUMPF (_,l')) ->
+			if l = l' then [(l,T.SKIP)] else gotoskip t1 t3 @ [(l,T.SKIP)]
+		| _ -> raise (Failure "Optimizer.gotoskip : invalid argument t1")
 	end
+	| _ -> [t1]

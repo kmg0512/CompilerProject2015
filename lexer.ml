@@ -757,8 +757,7 @@ and __ocaml_lex_start_rec lexbuf __ocaml_lex_state =
          ( raise LexicalError )
 # 759 "lexer.ml"
 
-  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
-      __ocaml_lex_start_rec lexbuf __ocaml_lex_state
+  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_start_rec lexbuf __ocaml_lex_state
 
 and comment lexbuf =
     __ocaml_lex_comment_rec lexbuf 53
@@ -767,26 +766,25 @@ and __ocaml_lex_comment_rec lexbuf __ocaml_lex_state =
       | 0 ->
 # 52 "lexer.mll"
           (comment_depth := !comment_depth+1; comment lexbuf)
-# 771 "lexer.ml"
+# 770 "lexer.ml"
 
   | 1 ->
 # 53 "lexer.mll"
           (comment_depth := !comment_depth-1;
            if !comment_depth > 0 then comment lexbuf )
-# 777 "lexer.ml"
+# 776 "lexer.ml"
 
   | 2 ->
 # 55 "lexer.mll"
          (raise Eof)
-# 782 "lexer.ml"
+# 781 "lexer.ml"
 
   | 3 ->
 # 56 "lexer.mll"
          (comment lexbuf)
-# 787 "lexer.ml"
+# 786 "lexer.ml"
 
-  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
-      __ocaml_lex_comment_rec lexbuf __ocaml_lex_state
+  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_comment_rec lexbuf __ocaml_lex_state
 
 ;;
 

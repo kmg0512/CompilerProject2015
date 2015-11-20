@@ -1,7 +1,7 @@
 (* TODO: Implement an optimizer *)
 
 let rec optimize : T.program -> T.program
-=fun t -> optimize3 (optimize2 (optimize1 t t))
+=fun t -> optimize4 (optimize3 (optimize2 (optimize1 t t)))
 
 and optimize1 : T.program -> T.linstr list -> T.program
 =fun t t' ->
@@ -20,8 +20,14 @@ and optimize2 : T.program -> T.program
 		| (_,T.CJUMPF (_,_)) -> gotoskip t1 t2 @ optimize2 t2
 		| _ -> [t1] @ optimize2 t2
 
-(* SKIP LABEL SHIFT - MAY BE OPTIMIZED IN LAST *)
 and optimize3 : T.program -> T.program
+=fun t ->
+	match t with
+	| [] -> []
+	| t1 :: t2 ->
+
+(* SKIP LABEL SHIFT *)
+and optimize4 : T.program -> T.program
 =fun t ->
 	match t with
 	| [] -> []
@@ -32,8 +38,8 @@ and optimize3 : T.program -> T.program
 		begin
 			match t2 with
 			| [] -> []
-			| (l',T.SKIP) :: t3 -> (l,T.SKIP) :: optimize3 t2
-			| (_,instr) :: t3 -> (l,instr) :: optimize3 t3
+			| (l',T.SKIP) :: t3 -> (l,T.SKIP) :: optimize4 t2
+			| (_,instr) :: t3 -> (l,instr) :: optimize4 t3
 		end
 		| _ -> t1 :: optimize3 t2
 	end
@@ -233,4 +239,4 @@ and gotoskip : T.linstr -> T.linstr list -> T.linstr list
 			if l = l' then [] else gotoskip t1 t3
 		| _ -> raise (Failure "Optimizer.gotoskip : invalid argument t1")
 	end
-	| _ -> [t1] 
+	| _ -> [t1] 	

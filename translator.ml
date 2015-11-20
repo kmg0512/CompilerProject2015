@@ -12,81 +12,81 @@ let rec trans_e : S.exp -> T.var * T.linstr list
 =fun e ->
 	match e with
 	| S.NUM n ->
-		let t = "t" ^ string_of_int (next var) in
+		let t = "$" ^ string_of_int (next var) in
 			(t,[(T.dummy_label,T.COPYC (t,n))])
 	| S.LV lv ->
 	begin
 		match lv with
 		| S.ID x ->
-			let t = "t" ^ string_of_int (next var) in
+			let t = "$" ^ string_of_int (next var) in
 				(t,[(T.dummy_label,T.COPY (t,x))])
 		| S.ARR (x,e) ->
 			let (t1,code) = trans_e e in
-				let t2 = "t" ^ string_of_int (next var) in
+				let t2 = "$" ^ string_of_int (next var) in
 					(t2,code @ [(T.dummy_label,T.LOAD (t2,(x,t1)))])
 	end
 	| S.ADD (e1,e2) ->
 		let (t1,code1) = trans_e e1 in
 		let (t2,code2) = trans_e e2 in
-			let t3 = "t" ^ string_of_int (next var) in
+			let t3 = "$" ^ string_of_int (next var) in
 				(t3,code1 @ code2 @ [(T.dummy_label,T.ASSIGNV (t3,T.ADD,t1,t2))])
 	| S.MINUS e ->
 		let (t1,code1) = trans_e e in
-		let t2 = "t" ^ string_of_int (next var) in
+		let t2 = "$" ^ string_of_int (next var) in
 			(t2,code1 @ [(T.dummy_label,T.ASSIGNU (t2,T.MINUS,t1))])
 	| S.SUB (e1,e2) ->
 		let (t1,code1) = trans_e e1 in
 		let (t2,code2) = trans_e e2 in
-			let t3 = "t" ^ string_of_int (next var) in
+			let t3 = "$" ^ string_of_int (next var) in
 				(t3,code1 @ code2 @ [(T.dummy_label,T.ASSIGNV (t3,T.SUB,t1,t2))])
 	| S.MUL (e1,e2) ->
 		let (t1,code1) = trans_e e1 in
 		let (t2,code2) = trans_e e2 in
-			let t3 = "t" ^ string_of_int (next var) in
+			let t3 = "$" ^ string_of_int (next var) in
 				(t3,code1 @ code2 @ [(T.dummy_label,T.ASSIGNV (t3,T.MUL,t1,t2))])
 	| S.DIV (e1,e2) ->
 		let (t1,code1) = trans_e e1 in
 		let (t2,code2) = trans_e e2 in
-			let t3 = "t" ^ string_of_int (next var) in
+			let t3 = "$" ^ string_of_int (next var) in
 				(t3,code1 @ code2 @ [(T.dummy_label,T.ASSIGNV (t3,T.DIV,t1,t2))])
 	| S.NOT e ->
 		let (t1,code1) = trans_e e in
-		let t2 = "t" ^ string_of_int (next var) in
+		let t2 = "$" ^ string_of_int (next var) in
 			(t2,code1 @ [(T.dummy_label,T.ASSIGNU (t2,T.NOT,t1))])
 	| S.LT (e1,e2) ->
 		let (t1,code1) = trans_e e1 in
 		let (t2,code2) = trans_e e2 in
-			let t3 = "t" ^ string_of_int (next var) in
+			let t3 = "$" ^ string_of_int (next var) in
 				(t3,code1 @ code2 @ [(T.dummy_label,T.ASSIGNV (t3,T.LT,t1,t2))])
 	| S.LE (e1,e2) ->
 		let (t1,code1) = trans_e e1 in
 		let (t2,code2) = trans_e e2 in
-			let t3 = "t" ^ string_of_int (next var) in
+			let t3 = "$" ^ string_of_int (next var) in
 				(t3,code1 @ code2 @ [(T.dummy_label,T.ASSIGNV (t3,T.LE,t1,t2))])
 	| S.GT (e1,e2) ->
 		let (t1,code1) = trans_e e1 in
 		let (t2,code2) = trans_e e2 in
-			let t3 = "t" ^ string_of_int (next var) in
+			let t3 = "$" ^ string_of_int (next var) in
 				(t3,code1 @ code2 @ [(T.dummy_label,T.ASSIGNV (t3,T.GT,t1,t2))])
 	| S.GE (e1,e2) ->
 		let (t1,code1) = trans_e e1 in
 		let (t2,code2) = trans_e e2 in
-			let t3 = "t" ^ string_of_int (next var) in
+			let t3 = "$" ^ string_of_int (next var) in
 				(t3,code1 @ code2 @ [(T.dummy_label,T.ASSIGNV (t3,T.GE,t1,t2))])
 	| S.EQ (e1,e2) ->
 		let (t1,code1) = trans_e e1 in
 		let (t2,code2) = trans_e e2 in
-			let t3 = "t" ^ string_of_int (next var) in
+			let t3 = "$" ^ string_of_int (next var) in
 				(t3,code1 @ code2 @ [(T.dummy_label,T.ASSIGNV (t3,T.EQ,t1,t2))])
 	| S.AND (e1,e2) ->
 		let (t1,code1) = trans_e e1 in
 		let (t2,code2) = trans_e e2 in
-			let t3 = "t" ^ string_of_int (next var) in
+			let t3 = "$" ^ string_of_int (next var) in
 				(t3,code1 @ code2 @ [(T.dummy_label,T.ASSIGNV (t3,T.AND,t1,t2))])
 	| S.OR (e1,e2) ->
 		let (t1,code1) = trans_e e1 in
 		let (t2,code2) = trans_e e2 in
-			let t3 = "t" ^ string_of_int (next var) in
+			let t3 = "$" ^ string_of_int (next var) in
 				(t3,code1 @ code2 @ [(T.dummy_label,T.ASSIGNV (t3,T.OR,t1,t2))])
 
 and trans_s : S.stmt -> T.linstr list

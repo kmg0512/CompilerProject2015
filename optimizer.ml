@@ -18,7 +18,6 @@ and optimize2 : T.program -> T.program
 		| (_,T.UJUMP _) -> gotoskip t1 t2 @ optimize2 t2
 		| (_,T.CJUMP (_,_)) -> gotoskip t1 t2 @ optimize2 t2
 		| (_,T.CJUMPF (_,_)) -> gotoskip t1 t2 @ optimize2 t2
-		| (_,T.SKIP) -> optimize2 t2
 		| _ -> [t1] @ optimize2 t2
 
 (* SKIP LABEL SHIFT *)
@@ -227,11 +226,11 @@ and gotoskip : T.linstr -> T.linstr list -> T.linstr list
 	begin
 		match t1 with
 		| (_,T.UJUMP l') ->
-			if l = l' then [(l,T.SKIP)] else gotoskip t1 t3 @ [(l,T.SKIP)]
+			if l = l' then [] else gotoskip t1 t3
 		| (_,T.CJUMP (_,l')) ->
-			if l = l' then [(l,T.SKIP)] else gotoskip t1 t3 @ [(l,T.SKIP)]
+			if l = l' then [] else gotoskip t1 t3
 		| (_,T.CJUMPF (_,l')) ->
-			if l = l' then [(l,T.SKIP)] else gotoskip t1 t3 @ [(l,T.SKIP)]
+			if l = l' then [] else gotoskip t1 t3
 		| _ -> raise (Failure "Optimizer.gotoskip : invalid argument t1")
 	end
-	| _ -> [t1]
+	| _ -> [t1] 

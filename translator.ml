@@ -89,7 +89,7 @@ let rec trans_e : S.exp -> T.var * T.linstr list
 			let t3 = "t" ^ string_of_int (next var) in
 				(t3,code1 @ code2 @ [(T.dummy_label,T.ASSIGNV (t3,T.OR,t1,t2))])
 
-let rec trans_s : S.stmt -> T.linstr list
+and trans_s : S.stmt -> T.linstr list
 =fun s ->
 	match s with
 	| S.ASSIGN (lv,e) ->
@@ -147,14 +147,14 @@ let rec trans_s : S.stmt -> T.linstr list
 	| S.BLOCK block ->
 		trans_b block
 
-let rec trans_ss : S.stmts -> T.linstr list
+and trans_ss : S.stmts -> T.linstr list
 =fun ss ->
 	match ss with
 	| [] -> []
 	| s1::s2 ->
 		(trans_s s1) @ (trans_ss s2)
 
-let trans_d : S.decl -> T.linstr
+and trans_d : S.decl -> T.linstr
 =fun d ->
 	match d with
 	| (typ,x) ->
@@ -164,20 +164,20 @@ let trans_d : S.decl -> T.linstr
 		| S.TARR n ->
 			(T.dummy_label,T.ALLOC (x,n))
 
-let rec trans_ds : S.decls -> T.linstr list
+and trans_ds : S.decls -> T.linstr list
 =fun ds ->
 	match ds with
 	| [] -> []
 	| d1::d2 ->
 		(trans_d d1) :: (trans_ds d2)
 
-let trans_b : S.block -> T.linstr list
+and trans_b : S.block -> T.linstr list
 =fun b ->
 	match b with
 	| (decls,stmts) ->
 		(trans_ds decls) @ (trans_ss stmts)
 
-let translate : S.program -> T.program
+and translate : S.program -> T.program
 =fun s ->
 	match s with
 	| block ->

@@ -20,7 +20,7 @@ and optimize2 : T.program -> T.program
 		| (_,T.CJUMPF (_,_)) -> gotoskip t1 t2 @ optimize2 t2
 		| _ -> [t1] @ optimize2 t2
 
-(* SKIP LABEL SHIFT *)
+(* SKIP LABEL SHIFT - MAY BE OPTIMIZED IN LAST *)
 and optimize3 : T.program -> T.program
 =fun t ->
 	match t with
